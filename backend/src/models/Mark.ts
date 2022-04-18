@@ -2,8 +2,11 @@ import { Schema, model } from 'mongoose'
 import { IMark } from '../interfaces/Mark'
 
 const markSchema = new Schema<IMark>({
-  title: { type: String, required: true },
+  userId: { type: String, required: true },
+  title: { type: String },
   comment: { type: String }
 })
 
-export const Mark = model<IMark>('Mark', markSchema)
+const Mark = model<IMark>('Mark', markSchema)
+
+export default Mark

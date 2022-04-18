@@ -2,6 +2,7 @@ import express, { Express } from 'express'
 import cors, { CorsOptions } from 'cors'
 import mongoose from 'mongoose'
 import markRoutes from './routes/mark'
+import userRoutes from './routes/user'
 
 const corsOption: CorsOptions = {
   allowedHeaders: [
@@ -40,5 +41,6 @@ app.use(express.json())
 app.use(cors(corsOption))
 
 app.use('/v1/notes', markRoutes)
+app.use('/v1/auth', userRoutes)
 
 app.listen(port, () => console.log('Server listening port', port))

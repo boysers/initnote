@@ -6,13 +6,14 @@ import {
   getOneMark,
   modifyMark
 } from '../controllers/mark'
+import auth from '../middleware/auth'
 
 const router: Router = Router()
 
-router.post('/', createMark)
-router.put('/:id', modifyMark)
-router.delete('/:id', deleteMark)
+router.post('/', auth, createMark)
+router.put('/:id', auth, modifyMark)
+router.delete('/:id', auth, deleteMark)
 router.get('/:id', getOneMark)
-router.get('/', getAllMark)
+router.get('/', auth, getAllMark)
 
 export default router

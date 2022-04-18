@@ -1,4 +1,5 @@
 export interface IMark {
-  title: string
+  userId: string
+  title?: string
   comment?: string
 }

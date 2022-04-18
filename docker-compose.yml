@@ -21,9 +21,8 @@ services:
 
   api:
     container_name: $API_HOSTNAME
-    build: 
-      context: ./backend
-      dockerfile: ./.docker/dev.dockerfile
+    image: node:16-alpine
+    working_dir: /app
     depends_on:
       - db
     networks:
@@ -33,6 +32,7 @@ services:
       - "${API_PORT}:${API_PORT}"
     environment:
       - API_PORT=$API_PORT
+      - TOKEN_SECRET=$TOKEN_SECRET
       - MONGO_PORT=$MONGO_PORT
       - MONGO_HOSTNAME=$MONGO_HOSTNAME
       - MONGO_DB=$MONGO_DB

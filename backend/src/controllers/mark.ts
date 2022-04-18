@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Mark } from '../models/Mark'
+import Mark from '../models/Mark'
 
 export const createMark = async (
   req: Request,
@@ -7,7 +7,7 @@ export const createMark = async (
 ): Promise<void> => {
   const markObject = req.body
 
-  const mark = new Mark({ ...markObject })
+  const mark = new Mark({ ...markObject, userId: req.auth.userId })
 
   try {
     await mark.save()
@@ -22,7 +22,13 @@ export const modifyMark = async (
   res: Response
 ): Promise<void> => {
   try {
-    await Mark.updateOne({ _id: req.params.id }, { ...req.body })
+    const updated = await Mark.updateOne(
+      { _id: req.params.id, userId: req.auth.userId },
+      { ...req.body }
+    )
+
+    if (updated.matchedCount === 0) throw new Error('Unauthorized request !')
+
     res.status(200).json({ message: 'note modified !' })
   } catch ({ message }) {
     res.status(400).json({ message })
@@ -34,7 +40,7 @@ export const deleteMark = async (
   res: Response
 ): Promise<void> => {
   try {
-    await Mark.deleteOne({ _id: req.params.id })
+    await Mark.deleteOne({ _id: req.params.id, userId: req.auth.userId })
     res.status(200).json({ message: 'note deleted !' })
   } catch ({ message }) {
     res.status(400).json({ message })
@@ -59,11 +65,13 @@ export const getAllMark = async (
   res: Response
 ): Promise<void> => {
   try {
-    const Marks = (await Mark.find()).map(({ _id, title, comment }) => ({
-      id: _id,
-      title,
-      comment
-    }))
+    const Marks = (await Mark.find({ userId: req.auth.userId })).map(
+      ({ _id, title, comment }) => ({
+        id: _id,
+        title,
+        comment
+      })
+    )
 
     res.status(200).json(Marks)
   } catch ({ message }) {

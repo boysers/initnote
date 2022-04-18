@@ -6,7 +6,8 @@
     "sourceMap": false,
     "outDir": "dist",
     "target": "ES2018",
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "typeRoots": ["./types"]
   },
   "include": ["src"]
 }
