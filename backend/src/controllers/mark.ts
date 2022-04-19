@@ -8,16 +8,24 @@ export const createMark = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const markObject = req.body as IMark
+  const { title, comment } = req.body as IMark
 
-  const mark = new Mark({
-    ...markObject,
+  const imageUrl = req.file
+    ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    : undefined
+
+  const markObject = {
     userId: req.auth.userId,
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-  })
+    title,
+    comment,
+    imageUrl
+  }
+
+  const mark = new Mark(markObject)
 
   try {
     await mark.save()
+
     res.status(201).json({ message: 'note created !' })
   } catch ({ message }) {
     res.status(400).json({ message })
@@ -35,27 +43,14 @@ export const modifyMark = async (
       req.file.filename
     }`
 
-    const mark = await Mark.findOne({
-      _id: req.params.id,
-      userId: req.auth.userId
-    })
-
-    const updated = await Mark.updateOne(
-      { _id: req.params.id },
-      { ...markObject, imageUrl }
-    )
-
-    if (updated.matchedCount === 0) throw new Error('Unauthorized request !')
-
+    await Mark.updateOne({ _id: req.params.id }, { ...markObject, imageUrl })
     fs.unlinkSync(
-      path.join(__dirname, '../images', mark.imageUrl.split('/images/')[1])
+      path.join(__dirname, '../images', req.oldImageUrl.split('/images/')[1])
     )
 
     res.status(200).json({ message: 'note modified !' })
   } catch ({ message }) {
     res.status(400).json({ message })
-
-    fs.unlinkSync(path.join(__dirname, '../images', req.file.filename))
   }
 }
 
@@ -64,13 +59,8 @@ export const deleteMark = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { imageUrl } = await Mark.findOne({
-      _id: req.params.id,
-      userId: req.auth.userId
-    })
-
     fs.unlink(
-      path.join(__dirname, '../images', imageUrl.split('/images/')[1]),
+      path.join(__dirname, '../images', req.oldImageUrl.split('/images/')[1]),
       async () => await Mark.deleteOne({ _id: req.params.id })
     )
 
@@ -85,9 +75,13 @@ export const getOneMark = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { _id, title, comment, imageUrl } = await Mark.findOne({
+    const mark = await Mark.findOne({
       _id: req.params.id
     })
+
+    if (!mark) throw new Error('Not found !')
+
+    const { _id, title, comment, imageUrl } = mark
 
     res.status(200).json({ id: _id, title, comment, imageUrl })
   } catch ({ message }) {

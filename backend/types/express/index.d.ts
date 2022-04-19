@@ -3,5 +3,6 @@ declare namespace Express {
     auth: {
       userId: string
     }
+    oldImageUrl: string
   }
 }

@@ -8,12 +8,13 @@ import {
   modifyMark
 } from '../controllers/mark'
 import auth from '../middleware/auth'
+import isAuthor from '../middleware/isAuthor'
 
 const router: Router = Router()
 
 router.post('/', auth, multer, createMark)
-router.put('/:id', auth, multer, modifyMark)
-router.delete('/:id', auth, deleteMark)
+router.put('/:id', auth, isAuthor, multer, modifyMark)
+router.delete('/:id', auth, isAuthor, deleteMark)
 router.get('/:id', getOneMark)
 router.get('/', auth, getAllMark)
 
