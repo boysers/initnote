@@ -1,13 +1,20 @@
 import { Request, Response } from 'express'
+import fs from 'fs'
+import path from 'path'
+import { IMark } from '../interfaces/Mark'
 import Mark from '../models/Mark'
 
 export const createMark = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const markObject = req.body
+  const markObject = req.body as IMark
 
-  const mark = new Mark({ ...markObject, userId: req.auth.userId })
+  const mark = new Mark({
+    ...markObject,
+    userId: req.auth.userId,
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  })
 
   try {
     await mark.save()
@@ -22,16 +29,33 @@ export const modifyMark = async (
   res: Response
 ): Promise<void> => {
   try {
+    const markObject = req.body as IMark
+
+    const imageUrl = `${req.protocol}://${req.get('host')}/images/${
+      req.file.filename
+    }`
+
+    const mark = await Mark.findOne({
+      _id: req.params.id,
+      userId: req.auth.userId
+    })
+
     const updated = await Mark.updateOne(
-      { _id: req.params.id, userId: req.auth.userId },
-      { ...req.body }
+      { _id: req.params.id },
+      { ...markObject, imageUrl }
     )
 
     if (updated.matchedCount === 0) throw new Error('Unauthorized request !')
 
+    fs.unlinkSync(
+      path.join(__dirname, '../images', mark.imageUrl.split('/images/')[1])
+    )
+
     res.status(200).json({ message: 'note modified !' })
   } catch ({ message }) {
     res.status(400).json({ message })
+
+    fs.unlinkSync(path.join(__dirname, '../images', req.file.filename))
   }
 }
 
@@ -40,7 +64,16 @@ export const deleteMark = async (
   res: Response
 ): Promise<void> => {
   try {
-    await Mark.deleteOne({ _id: req.params.id, userId: req.auth.userId })
+    const { imageUrl } = await Mark.findOne({
+      _id: req.params.id,
+      userId: req.auth.userId
+    })
+
+    fs.unlink(
+      path.join(__dirname, '../images', imageUrl.split('/images/')[1]),
+      async () => await Mark.deleteOne({ _id: req.params.id })
+    )
+
     res.status(200).json({ message: 'note deleted !' })
   } catch ({ message }) {
     res.status(400).json({ message })
@@ -52,9 +85,11 @@ export const getOneMark = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { title, comment, _id } = await Mark.findOne({ _id: req.params.id })
+    const { _id, title, comment, imageUrl } = await Mark.findOne({
+      _id: req.params.id
+    })
 
-    res.status(200).json({ id: _id, title, comment })
+    res.status(200).json({ id: _id, title, comment, imageUrl })
   } catch ({ message }) {
     res.status(404).json({ message })
   }
@@ -66,10 +101,11 @@ export const getAllMark = async (
 ): Promise<void> => {
   try {
     const Marks = (await Mark.find({ userId: req.auth.userId })).map(
-      ({ _id, title, comment }) => ({
+      ({ _id, title, comment, imageUrl }) => ({
         id: _id,
         title,
-        comment
+        comment,
+        imageUrl
       })
     )
 

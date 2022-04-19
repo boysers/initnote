@@ -1,6 +1,7 @@
 import express, { Express } from 'express'
 import cors, { CorsOptions } from 'cors'
 import mongoose from 'mongoose'
+import path from 'path'
 import markRoutes from './routes/mark'
 import userRoutes from './routes/user'
 
@@ -39,6 +40,8 @@ const app: Express = express()
 
 app.use(express.json())
 app.use(cors(corsOption))
+
+app.use('/images', express.static(path.join(__dirname, 'images')))
 
 app.use('/v1/notes', markRoutes)
 app.use('/v1/auth', userRoutes)
