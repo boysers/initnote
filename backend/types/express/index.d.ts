@@ -1,8 +1,16 @@
 declare namespace Express {
   interface Request {
     auth: {
-      userId: string
+      userId?: string
+      error?: Error
     }
-    oldImageUrl: string
+    mark: {
+      userId?: string
+      isPrivate?: boolean
+      title?: string
+      comment?: string
+      imageUrl?: string
+      error?: Error
+    }
   }
 }

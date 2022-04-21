@@ -3,6 +3,7 @@ import { IMark } from '../interfaces/Mark'
 
 const markSchema = new Schema<IMark>({
   userId: { type: String, required: true },
+  isPrivate: { type: Boolean, required: true, default: true },
   title: { type: String },
   comment: { type: String },
   imageUrl: { type: String }

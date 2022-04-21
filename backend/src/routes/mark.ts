@@ -1,21 +1,26 @@
 import { Router } from 'express'
+import protectedAuth from '../middleware/protectedAuth'
 import multer from '../middleware/multer-config'
 import {
   createMark,
   deleteMark,
+  deleteMarkImage,
   getAllMark,
   getOneMark,
-  modifyMark
+  modifyMark,
+  modifyMarkImage
 } from '../controllers/mark'
-import auth from '../middleware/auth'
 import isAuthor from '../middleware/isAuthor'
+import isPrivate from '../middleware/isPrivate'
 
 const router: Router = Router()
 
-router.post('/', auth, multer, createMark)
-router.put('/:id', auth, isAuthor, multer, modifyMark)
-router.delete('/:id', auth, isAuthor, deleteMark)
-router.get('/:id', getOneMark)
-router.get('/', auth, getAllMark)
+router.post('/', protectedAuth, multer, createMark)
+router.put('/:id/image', protectedAuth, isAuthor, multer, modifyMarkImage)
+router.delete('/:id/image', protectedAuth, isAuthor, deleteMarkImage)
+router.put('/:id', protectedAuth, isAuthor, modifyMark)
+router.delete('/:id', protectedAuth, isAuthor, deleteMark)
+router.get('/:id', isPrivate, getOneMark)
+router.get('/', protectedAuth, getAllMark)
 
 export default router

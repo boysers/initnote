@@ -14,8 +14,7 @@ export default async (
 
     if (!mark) throw new Error('Unauthorized request !')
 
-    req.oldImageUrl = mark.imageUrl
-
+    req.mark = mark
     next()
   } catch ({ message }) {
     res.status(401).json({ message })

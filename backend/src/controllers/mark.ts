@@ -8,25 +8,75 @@ export const createMark = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { title, comment } = req.body as IMark
+  const markObject = req.body as IMark
 
-  const imageUrl = req.file
-    ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    : undefined
-
-  const markObject = {
+  const mark = new Mark({
+    ...markObject,
     userId: req.auth.userId,
-    title,
-    comment,
-    imageUrl
-  }
-
-  const mark = new Mark(markObject)
+    imageUrl: req.file
+      ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      : undefined
+  })
 
   try {
     await mark.save()
 
     res.status(201).json({ message: 'note created !' })
+  } catch ({ message }) {
+    res.status(400).json({ message })
+  }
+}
+
+export const modifyMarkImage = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    if (!req.file) throw new Error('No image sent')
+
+    await Mark.updateOne(
+      { _id: req.params.id },
+      {
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${
+          req.file.filename
+        }`
+      }
+    )
+
+    if (req.mark.imageUrl)
+      fs.unlinkSync(
+        path.join(
+          __dirname,
+          '../images',
+          req.mark.imageUrl.split('/images/')[1]
+        )
+      )
+
+    res.status(200).json({ message: 'image modified !' })
+  } catch ({ message }) {
+    res.status(400).json({ message })
+  }
+}
+
+export const deleteMarkImage = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    if (!req.mark.imageUrl) throw new Error('Image not exist!')
+
+    await Mark.updateOne(
+      { _id: req.params.id },
+      {
+        $unset: { imageUrl: 1 }
+      }
+    )
+
+    fs.unlinkSync(
+      path.join(__dirname, '../images', req.mark.imageUrl.split('/images/')[1])
+    )
+
+    res.status(200).json({ message: 'image deleted !' })
   } catch ({ message }) {
     res.status(400).json({ message })
   }
@@ -39,14 +89,7 @@ export const modifyMark = async (
   try {
     const markObject = req.body as IMark
 
-    const imageUrl = `${req.protocol}://${req.get('host')}/images/${
-      req.file.filename
-    }`
-
-    await Mark.updateOne({ _id: req.params.id }, { ...markObject, imageUrl })
-    fs.unlinkSync(
-      path.join(__dirname, '../images', req.oldImageUrl.split('/images/')[1])
-    )
+    await Mark.updateOne({ _id: req.params.id }, markObject)
 
     res.status(200).json({ message: 'note modified !' })
   } catch ({ message }) {
@@ -59,9 +102,9 @@ export const deleteMark = async (
   res: Response
 ): Promise<void> => {
   try {
-    fs.unlink(
-      path.join(__dirname, '../images', req.oldImageUrl.split('/images/')[1]),
-      async () => await Mark.deleteOne({ _id: req.params.id })
+    await Mark.deleteOne({ _id: req.params.id })
+    fs.unlinkSync(
+      path.join(__dirname, '../images', req.mark.imageUrl.split('/images/')[1])
     )
 
     res.status(200).json({ message: 'note deleted !' })
@@ -75,15 +118,9 @@ export const getOneMark = async (
   res: Response
 ): Promise<void> => {
   try {
-    const mark = await Mark.findOne({
-      _id: req.params.id
-    })
+    const mark = req.mark
 
-    if (!mark) throw new Error('Not found !')
-
-    const { _id, title, comment, imageUrl } = mark
-
-    res.status(200).json({ id: _id, title, comment, imageUrl })
+    res.status(200).json(mark)
   } catch ({ message }) {
     res.status(404).json({ message })
   }
@@ -95,8 +132,9 @@ export const getAllMark = async (
 ): Promise<void> => {
   try {
     const Marks = (await Mark.find({ userId: req.auth.userId })).map(
-      ({ _id, title, comment, imageUrl }) => ({
+      ({ _id, isPrivate, title, comment, imageUrl }) => ({
         id: _id,
+        isPrivate,
         title,
         comment,
         imageUrl
