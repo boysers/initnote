@@ -1,7 +1,8 @@
 import express, { Express } from 'express'
+import logger from 'morgan'
+import path from 'path'
 import connectdb from './db'
 import initCors from './cors'
-import path from 'path'
 import markRoutes from './routes/mark'
 import userRoutes from './routes/user'
 import isLoged from './middleware/isLoged'
@@ -11,6 +12,8 @@ connectdb()
 const port: number = parseInt(process.env.API_PORT || '3000', 10)
 
 const app: Express = express()
+
+app.use(logger('dev'))
 
 app.use(express.json())
 app.use(initCors())
