@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --color1: #1a181b;
+  --color2: #5257b1;
+  // --color2: #6369d1;
+  --color3: #e75a7c;
+  --color4: #f0f0c9;
+  --color5: #e8ebe4;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: 'sans-serif';
+}
+
+body {
+  color: var(--color5);
+  background-color: var(--color1);
+}

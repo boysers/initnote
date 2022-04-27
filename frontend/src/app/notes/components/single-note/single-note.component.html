@@ -1,0 +1,26 @@
+<section>
+  <div *ngIf="note$ | async as note; else NoteFound" class="note-card">
+    <div class="image-card">
+      <img
+        *ngIf="note.imageUrl"
+        [src]="urlApi + note.imageUrl"
+        [alt]="note.title"
+      />
+    </div>
+    <div class="note-card-info">
+      <h3 class="title">{{ note.title }}</h3>
+      <p>{{ note.comment }}</p>
+      <p *ngIf="note.isPrivate; else elseBlock">🔒 Privée</p>
+      <ng-template #elseBlock>🔓 Partagée</ng-template>
+    </div>
+    <div class="admin" *ngIf="isLoged()">
+      <button (click)="onDelete()">Delete</button>
+      <button (click)="onContinueModify()">Modify</button>
+    </div>
+  </div>
+  <ng-template #NoteFound>
+    <div class="notFound">
+      <h2 class="title">Not found or note is private 🔒</h2>
+    </div>
+  </ng-template>
+</section>

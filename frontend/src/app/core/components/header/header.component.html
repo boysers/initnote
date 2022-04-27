@@ -1,0 +1,14 @@
+<header>
+  <h1>Initnote</h1>
+  <nav>
+    <a routerLink="/notes" routerLinkActive="active">notes</a>
+    <button (click)="onAddNewNote()">+</button>
+  </nav>
+  <div>
+    <div class="auth-card">
+      <a routerLink="auth/login" routerLinkActive="active">login</a>
+      <a routerLink="auth/signup" routerLinkActive="active">signup</a>
+      <button (click)="onDisconnect()">Disconnect</button>
+    </div>
+  </div>
+</header>
