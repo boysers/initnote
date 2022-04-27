@@ -13,9 +13,7 @@ export const createMark = async (
   const mark = new Mark({
     ...markObject,
     userId: req.auth.userId,
-    imageUrl: req.file
-      ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-      : undefined
+    imageUrl: req.file ? `/images/${req.file.filename}` : undefined
   })
 
   try {
@@ -103,9 +101,15 @@ export const deleteMark = async (
 ): Promise<void> => {
   try {
     await Mark.deleteOne({ _id: req.params.id })
-    fs.unlinkSync(
-      path.join(__dirname, '../images', req.mark.imageUrl.split('/images/')[1])
-    )
+
+    if (req.mark.imageUrl)
+      fs.unlinkSync(
+        path.join(
+          __dirname,
+          '../images',
+          req.mark.imageUrl.split('/images/')[1]
+        )
+      )
 
     res.status(200).json({ message: 'note deleted !' })
   } catch ({ message }) {
