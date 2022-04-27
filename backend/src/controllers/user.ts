@@ -7,7 +7,12 @@ import User from '../models/User'
 export const signup = async (req: Request, res: Response) => {
   const { email, password } = req.body as IUser
 
+  const regexEmail =
+    /^[a-zA-Z0-9_.+]*[a-zA-Z][a-zA-Z0-9_.+]*@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
+
   try {
+    if (!email.match(regexEmail)) throw new Error('Email non valide')
+
     const hash = await bcrypt.hash(password, 10)
 
     const user = new User({ email, password: hash })
