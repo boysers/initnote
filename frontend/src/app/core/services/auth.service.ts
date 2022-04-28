@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { map, tap } from 'rxjs'
+import { tap } from 'rxjs'
 
 const { protocol, hostname, port } = location
 
@@ -33,5 +33,9 @@ export class AuthService {
 
   getToken() {
     return localStorage.getItem('token')
+  }
+
+  isLoggedIn(): boolean {
+    return localStorage.getItem('token') ? true : false
   }
 }

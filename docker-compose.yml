@@ -2,36 +2,23 @@ version: '3.8'
 services:
   client:
     container_name: $CLIENT_HOSTNAME
-    build:
-      context: ./frontend
-      dockerfile: ./.docker/dev.dockerfile
     restart: always
-    networks:
-      - api-network
     depends_on:
       - api
-    ports:
-      - "${CLIENT_PORT}:${CLIENT_PORT}"
+      - db
     environment:
       - CLIENT_PORT=$CLIENT_PORT
+      - CLIENT_HOSTNAME=$CLIENT_HOSTNAME
       - API_PORT=$API_PORT
       - API_HOSTNAME=$API_HOSTNAME
-    volumes:
-      - "./frontend:/app"
-    command: sh -c "npm install && ng serve --host 0.0.0.0 --port $CLIENT_PORT --proxy-config proxy.conf.js"
 
   api:
     container_name: $API_HOSTNAME
-    image: node:16-alpine
     restart: always
-    working_dir: /app
+    networks:
+      - db-api-network
     depends_on:
       - db
-    networks:
-      - mongo-network
-      - api-network
-    ports:
-      - "${API_PORT}:${API_PORT}"
     environment:
       - API_PORT=$API_PORT
       - TOKEN_SECRET=$TOKEN_SECRET
@@ -40,9 +27,6 @@ services:
       - MONGO_DB=$MONGO_DB
       - MONGO_USERNAME=$MONGO_USERNAME
       - MONGO_PASSWORD=$MONGO_PASSWORD
-    volumes:
-      - "./backend:/app"
-    command: sh -c "npm install && npm run start"
 
   db:
     container_name: ${MONGO_HOSTNAME}
@@ -52,16 +36,12 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
     networks:
-      - mongo-network
-    ports:
-      - "${MONGO_PORT}:${MONGO_PORT}"
+      - db-api-network
     volumes:
       - db_data:/data/db
 
 networks:
-  api-network:
-    driver: bridge
-  mongo-network:
+  db-api-network:
     driver: bridge
 
 volumes:

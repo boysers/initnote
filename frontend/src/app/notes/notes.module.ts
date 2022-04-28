@@ -5,7 +5,7 @@ import { NoteComponent } from './components/note/note.component'
 import { SingleNoteComponent } from './components/single-note/single-note.component'
 import { NewNoteComponent } from './components/new-note/new-note.component'
 import { NotesRoutingModule } from './notes-routing.module'
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ModifyNoteComponent } from './components/modify-note/modify-note.component'
 
 @NgModule({
@@ -21,7 +21,8 @@ import { ModifyNoteComponent } from './components/modify-note/modify-note.compon
     NoteListComponent,
     NoteComponent,
     SingleNoteComponent,
-    NewNoteComponent
+    NewNoteComponent,
+    ModifyNoteComponent
   ]
 })
 export class NotesModule {}

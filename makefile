@@ -1,16 +1,14 @@
-# args="$(filter-out $@,$(MAKECMDGOALS))"
-
-dev: 
-	docker-compose up -d
+prod:
+	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
 stop:
-	docker-compose down
+	docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
 
-# logs:
-# 	docker logs -f $(call args)
+dev: 
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+down:
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
 
 logs:
 	docker logs -f api-express
-
-# %:
-# 	@:

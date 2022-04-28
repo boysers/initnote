@@ -35,9 +35,7 @@ export const modifyMarkImage = async (
     await Mark.updateOne(
       { _id: req.params.id },
       {
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${
-          req.file.filename
-        }`
+        imageUrl: `/images/${req.file.filename}`
       }
     )
 

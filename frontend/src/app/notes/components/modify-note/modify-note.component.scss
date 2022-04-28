@@ -13,12 +13,14 @@
   justify-content: space-between;
 }
 
-input, textarea {
+input,
+textarea,
+select {
   width: 50%;
 }
 
 .action-buttons {
-  width: 100%;
+  width: 80%;
 }
 
 button {
@@ -32,11 +34,21 @@ button {
     width: auto;
     margin: 0 10px;
   }
-  
 }
 
 .note-card {
   display: flex;
   justify-content: center;
   margin: 10px;
+}
+
+.image-card {
+  display: flex;
+  justify-content: flex-end;
+
+  img {
+    width: 50%;
+    display: block;
+    transition: 0.35s ease-out;
+  }
 }

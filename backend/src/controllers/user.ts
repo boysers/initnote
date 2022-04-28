@@ -3,15 +3,13 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { IUser } from '../interfaces/User'
 import User from '../models/User'
+import isValidEmail from '../functions/isValidEmail'
 
 export const signup = async (req: Request, res: Response) => {
   const { email, password } = req.body as IUser
 
-  const regexEmail =
-    /^[a-zA-Z0-9_.+]*[a-zA-Z][a-zA-Z0-9_.+]*@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
-
   try {
-    if (!email.match(regexEmail)) throw new Error('Email non valide')
+    if (!isValidEmail(email)) throw new Error('Invalid Email')
 
     const hash = await bcrypt.hash(password, 10)
 
@@ -29,6 +27,8 @@ export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body as IUser
 
   try {
+    if (!isValidEmail(email)) throw new Error('Invalid Email')
+
     const user = await User.findOne({ email })
     if (!user) return res.status(401).json({ error: 'User not found !' })
 

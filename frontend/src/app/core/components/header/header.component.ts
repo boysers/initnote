@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
+import { DataSharingService } from '../../services/dataSharing.service'
 
 @Component({
   selector: 'app-header',
@@ -7,9 +8,20 @@ import { Router } from '@angular/router'
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  constructor(private router: Router) {}
+  isUserLoggedIn!: boolean
 
-  ngOnInit(): void {}
+  constructor(
+    private router: Router,
+    private dataSharingService: DataSharingService
+  ) {
+    this.dataSharingService.isUserLoggedIn.subscribe((value) => {
+      this.isUserLoggedIn = value
+    })
+  }
+
+  ngOnInit(): void {
+    this.isUserLoggedIn = localStorage.getItem('token') ? true : false
+  }
 
   onAddNewNote(): void {
     this.router.navigateByUrl('/notes/create')
@@ -17,6 +29,6 @@ export class HeaderComponent implements OnInit {
 
   onDisconnect(): void {
     localStorage.removeItem('token')
-    this.router.navigateByUrl('auth/login')
+    this.dataSharingService.isUserLoggedIn.next(false)
   }
 }

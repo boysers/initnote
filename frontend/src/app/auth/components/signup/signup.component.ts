@@ -28,8 +28,6 @@ export class SignupComponent implements OnInit {
   }
 
   onSignup(): void {
-    console.log(this.signupForm.value)
-
     this.auth
       .signup(this.signupForm.value)
       .subscribe(() => this.router.navigateByUrl('/notes'))

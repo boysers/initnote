@@ -2,3 +2,6 @@
 /dist
 .env
 /src/images/*
+.git
+.gitignore
+/dist

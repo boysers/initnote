@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { NgForm } from '@angular/forms'
+import { FormBuilder, FormControl, FormGroup, NgForm } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Observable, tap } from 'rxjs'
 import { Note } from 'src/app/core/models/note.model'
@@ -11,27 +11,46 @@ import { NotesService } from 'src/app/core/services/notes.service'
   styleUrls: ['./modify-note.component.scss']
 })
 export class ModifyNoteComponent implements OnInit {
-  note$!: Observable<Note>
+  noteForm!: FormGroup
 
-  title!: string
-  comment!: string
   image!: File
-  isPrivate!: string
   noteId!: string
-  isDeleteImage!: boolean
+  imageUrl!: string | undefined
 
   constructor(
     private notesServices: NotesService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private formGroup: FormBuilder
   ) {}
 
   ngOnInit(): void {
+    const urlApi = `${location.protocol}//${location.hostname}:${location.port}/api`
+
     this.noteId = this.route.snapshot.params['id']
 
-    this.note$ = this.notesServices.getNoteById(this.noteId)
+    this.noteForm = this.formGroup.group({
+      title: [null],
+      comment: [null],
+      isPrivate: [null],
+      isDeleteImage: [null]
+    })
 
-    this.isDeleteImage = false
+    this.notesServices
+      .getNoteById(this.noteId)
+      .pipe(
+        tap((note) => {
+          this.noteForm.setValue({
+            title: note.title,
+            comment: note.comment,
+            isPrivate: note.isPrivate,
+            isDeleteImage: false
+          })
+
+          this.imageUrl = note.imageUrl ? urlApi + note.imageUrl : undefined
+        })
+      )
+      .subscribe()
   }
 
   onFileChange(event: any) {
@@ -42,19 +61,21 @@ export class ModifyNoteComponent implements OnInit {
     this.notesServices.deleteImage(this.noteId).subscribe()
   }
 
-  onSubmitModifyForm(form: NgForm): void {
-    const { title, comment, isPrivate } = form.value as {
+  onSubmitModifyForm(): void {
+    const { title, comment, isPrivate, isDeleteImage } = this.noteForm
+      .value as {
       title: string
       comment: string
-      isPrivate: string
+      isPrivate: boolean
+      isDeleteImage: boolean
     }
 
-    if (this.isDeleteImage) this.onDeleteImage()
+    if (isDeleteImage) this.onDeleteImage()
 
     const noteObject = {
       title,
       comment,
-      isPrivate: isPrivate == 'true' ? true : false
+      isPrivate
     }
 
     const formData = new FormData()

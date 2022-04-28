@@ -1,0 +1,19 @@
+upstream api {
+  server ${API_HOSTNAME}:${API_PORT};
+}
+upstream client {
+  server ${CLIENT_HOSTNAME}:${CLIENT_PORT};
+}
+
+server {
+  listen 80;
+  server_name localhost;
+
+  location /api/ {
+    proxy_pass http://api/;
+  }
+
+  location / {
+    proxy_pass http://client;
+  }
+}

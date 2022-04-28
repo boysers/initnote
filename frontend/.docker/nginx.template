@@ -1,0 +1,10 @@
+server {
+  listen ${CLIENT_PORT};
+  server_name ${CLIENT_HOSTNAME};
+
+  root /usr/share/nginx/html;
+  
+  location / {
+    try_files $uri /index.html;
+  }
+}

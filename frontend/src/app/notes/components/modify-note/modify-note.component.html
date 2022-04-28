@@ -1,59 +1,41 @@
 <div class="form-card">
   <h2>Modifier la NOTE</h2>
-  <form #noteForm="ngForm" (ngSubmit)="onSubmitModifyForm(noteForm)">
+  <form (ngSubmit)="onSubmitModifyForm()" [formGroup]="noteForm">
     <div class="form-group">
       <label for="titleInput">Titre</label>
-      <input type="text" id="titleInput" [(ngModel)]="title" name="title" />
+      <input type="text" id="titleInput" formControlName="title" />
     </div>
     <div class="form-group">
       <label for="commentInput">Commentaire</label>
       <textarea
         type="text"
         id="commentInput"
-        [(ngModel)]="comment"
-        name="comment"
         rows="4"
+        formControlName="comment"
       ></textarea>
     </div>
-    <div class="form-group radio">
-      <input
-        type="radio"
-        id="priver"
-        value="true"
-        [(ngModel)]="isPrivate"
-        name="isPrivate"
-      />
-      <label for="priver">Priver</label>
-      <input
-        type="radio"
-        id="notPriver"
-        value="false"
-        [(ngModel)]="isPrivate"
-        name="isPrivate"
-      />
-      <label for="notPriver">Non répertorié</label>
+    <div class="form-group">
+      <label for="isPrivate">Note à partager ?</label>
+      <select id="isPrivate" formControlName="isPrivate">
+        <option value="true">Privé</option>
+        <option value="false">Lien partagé</option>
+      </select>
     </div>
     <div class="form-group">
       <label for="image">Image</label>
       <input type="file" id="image" (change)="onFileChange($event)" />
     </div>
-    <div>
+
+    <div class="form-group image-card">
+      <img *ngIf="imageUrl" [src]="imageUrl" alt="image note" />
+    </div>
+
+    <div class="form-group">
       <label for="deleteImage">Supprimer l'image</label>
-      <input
-        type="checkbox"
-        name="deleteImage"
-        id="deleteImage"
-        [(ngModel)]="isDeleteImage"
-        name="isDeleteImage"
-        value="false"
-      />
+      <input type="checkbox" id="deleteImage" formControlName="isDeleteImage" />
     </div>
     <div>
-      <button class="action-buttons" type="submit">Enregistrer</button>
+      <button class="action-buttons"  type="submit">Enregistrer</button>
     </div>
   </form>
-</div>
-
-<div class="note-card">
-  <app-note *ngIf="note$ | async as note" [note]="note"></app-note>
 </div>
