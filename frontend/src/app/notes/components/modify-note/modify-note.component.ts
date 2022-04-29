@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core'
-import { FormBuilder, FormControl, FormGroup, NgForm } from '@angular/forms'
+import { FormBuilder, FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Observable, tap } from 'rxjs'
-import { Note } from 'src/app/core/models/note.model'
+import { tap } from 'rxjs'
 import { NotesService } from 'src/app/core/services/notes.service'
 
 @Component({
@@ -30,24 +29,21 @@ export class ModifyNoteComponent implements OnInit {
     this.noteId = this.route.snapshot.params['id']
 
     this.noteForm = this.formGroup.group({
+      isPrivate: [null],
       title: [null],
       comment: [null],
-      isPrivate: [null],
-      isDeleteImage: [null]
+      isDeleteImage: [false]
     })
 
     this.notesServices
       .getNoteById(this.noteId)
       .pipe(
-        tap((note) => {
-          this.noteForm.setValue({
-            title: note.title,
-            comment: note.comment,
-            isPrivate: note.isPrivate,
-            isDeleteImage: false
-          })
+        tap(({ title, comment, isPrivate, imageUrl }) => {
+          this.noteForm.controls['title'].setValue(title)
+          this.noteForm.controls['comment'].setValue(comment)
+          this.noteForm.controls['isPrivate'].setValue(isPrivate)
 
-          this.imageUrl = note.imageUrl ? urlApi + note.imageUrl : undefined
+          this.imageUrl = imageUrl ? urlApi + imageUrl : undefined
         })
       )
       .subscribe()
