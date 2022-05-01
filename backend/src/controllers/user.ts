@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { IUser } from '../interfaces/User'
 import User from '../models/User'
-import isValidEmail from '../functions/isValidEmail'
+import isValidEmail from '../utils/isValidEmail'
 
 export const signup = async (req: Request, res: Response) => {
   const { email, password } = req.body as IUser
