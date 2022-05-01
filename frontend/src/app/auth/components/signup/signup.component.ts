@@ -1,7 +1,10 @@
+import { HttpErrorResponse } from '@angular/common/http'
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
+import { catchError, tap } from 'rxjs'
 import { AuthService } from 'src/app/core/services/auth.service'
+import { DataSharingService } from 'src/app/core/services/dataSharing.service'
 
 @Component({
   selector: 'app-signup',
@@ -11,11 +14,13 @@ import { AuthService } from 'src/app/core/services/auth.service'
 export class SignupComponent implements OnInit {
   signupForm!: FormGroup
   emailRegex!: RegExp
+  errorHttp!: string
 
   constructor(
     private auth: AuthService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private dataSharingService: DataSharingService
   ) {}
 
   ngOnInit(): void {
@@ -30,6 +35,16 @@ export class SignupComponent implements OnInit {
   onSignup(): void {
     this.auth
       .signup(this.signupForm.value)
-      .subscribe(() => this.router.navigateByUrl('/notes'))
+      .pipe(
+        tap(() => this.router.navigateByUrl('/notes')),
+        catchError((err) => {
+          if (err instanceof HttpErrorResponse) {
+            this.errorHttp = err.error.message
+          }
+
+          throw err
+        })
+      )
+      .subscribe()
   }
 }
