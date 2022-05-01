@@ -30,5 +30,6 @@ export class HeaderComponent implements OnInit {
   onDisconnect(): void {
     localStorage.removeItem('token')
     this.dataSharingService.isUserLoggedIn.next(false)
+    this.router.navigateByUrl('/')
   }
 }
