@@ -12,6 +12,7 @@ import { DataSharingService } from 'src/app/core/services/dataSharing.service'
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup
+  errorHttp!: string
 
   constructor(
     private auth: AuthService,
@@ -24,6 +25,10 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.formBuilder.group({
       email: [null, Validators.required],
       password: [null, Validators.required]
+    })
+
+    this.dataSharingService.errorHttp.subscribe((value) => {
+      this.errorHttp = value
     })
   }
 

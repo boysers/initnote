@@ -8,6 +8,9 @@
     <label for="password">Mot de passe</label>
     <input type="password" id="password" formControlName="password" />
   </div>
+  <div *ngIf="errorHttp" class="form-group error">
+    <p>{{ errorHttp }}</p>
+  </div>
   <div class="action-buttons">
     <button type="submit" (click)="onLogin()">Connexion</button>
   </div>

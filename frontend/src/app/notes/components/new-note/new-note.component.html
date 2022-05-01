@@ -15,23 +15,12 @@
         rows="4"
       ></textarea>
     </div>
-    <div class="form-group radio">
-      <input
-      type="radio"
-      id="priver"
-      value="true"
-      [(ngModel)]="isPrivate"
-      name="isPrivate"
-      />
-      <label for="priver">Priver</label>
-      <input
-      type="radio"
-      id="notPriver"
-      value="false"
-      [(ngModel)]="isPrivate"
-      name="isPrivate"
-      />
-      <label for="notPriver">Non répertorié</label>
+    <div class="form-group">
+      <label for="isPrivate">Note à partager ?</label>
+      <select id="isPrivate" [(ngModel)]="isPrivate" name="isPrivate">
+        <option value="true">Privé</option>
+        <option value="false">Lien partagé</option>
+      </select>
     </div>
     <div class="form-group">
       <label for="image">Image</label>

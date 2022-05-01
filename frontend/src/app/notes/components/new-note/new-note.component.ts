@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { NgForm } from '@angular/forms'
 import { Router } from '@angular/router'
 import { tap } from 'rxjs'
@@ -9,13 +9,17 @@ import { NotesService } from 'src/app/core/services/notes.service'
   templateUrl: './new-note.component.html',
   styleUrls: ['./new-note.component.scss']
 })
-export class NewNoteComponent {
+export class NewNoteComponent implements OnInit {
   title!: string
   comment!: string
   image!: File
-  isPrivate!: string
+  isPrivate!: boolean
 
   constructor(private notesService: NotesService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.isPrivate = true
+  }
 
   onFileChange(event: any) {
     this.image = event.target.files[0]
