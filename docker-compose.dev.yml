@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   client:
+    image: boysers/angular-dev:1.0
     build:
       context: ./frontend
       dockerfile: ./.docker/dev.dockerfile

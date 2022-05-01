@@ -1,13 +1,9 @@
-FROM node:16-alpine AS builder
-
-WORKDIR /app
+FROM boysers/angular-dev:1.0 AS builder
 
 COPY . .
 
 RUN npm install && \
-  npm install -g @angular/cli
-
-RUN ng build
+  ng build
 
 FROM nginx:1.21-alpine
 
