@@ -5,14 +5,19 @@
 
 header {
   text-align: center;
-  border-bottom: 1px var(--color4) solid;
+  border-bottom: 1px #e6e4e7 solid;
   padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
+  h1 {
+    font-weight: 600;
+  }
+
   .auth-card {
-    a, button {
+    a,
+    button {
       margin: 0 0.5rem;
       padding: 0.25rem;
     }
@@ -21,6 +26,10 @@ header {
       &:hover {
         cursor: pointer;
       }
+    }
+
+    .btn-logout {
+      cursor: pointer;
     }
   }
 }

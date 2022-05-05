@@ -23,10 +23,6 @@ export class HeaderComponent implements OnInit {
     this.isUserLoggedIn = localStorage.getItem('token') ? true : false
   }
 
-  onAddNewNote(): void {
-    this.router.navigateByUrl('/notes/create')
-  }
-
   onDisconnect(): void {
     localStorage.removeItem('token')
     this.dataSharingService.isUserLoggedIn.next(false)

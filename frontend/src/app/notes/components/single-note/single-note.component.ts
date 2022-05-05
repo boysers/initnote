@@ -30,10 +30,12 @@ export class SingleNoteComponent implements OnInit {
   }
 
   onDelete(): void {
-    this.notesServices
-      .deleteNote(this.noteId)
-      .pipe(tap(() => this.router.navigateByUrl('/notes')))
-      .subscribe()
+    if (confirm('Voulez-vous supprimer la note ?')) {
+      this.notesServices
+        .deleteNote(this.noteId)
+        .pipe(tap(() => this.router.navigateByUrl('/notes')))
+        .subscribe()
+    }
   }
 
   onContinueModify() {

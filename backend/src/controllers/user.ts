@@ -13,7 +13,12 @@ export const signup = async (req: Request, res: Response) => {
 
     const hash = await bcrypt.hash(password, 10)
 
-    const user = new User({ email, password: hash })
+    const user = new User({
+      email,
+      password: hash,
+      created: new Date(),
+      lastLogin: new Date()
+    })
 
     await user.save()
 
@@ -35,8 +40,16 @@ export const login = async (req: Request, res: Response) => {
     const isValid = await bcrypt.compare(password, user.password)
     if (!isValid) return res.status(401).json({ error: 'Incorrect password !' })
 
+    user.lastLogin = new Date()
+    await user.save()
+
     res.status(200).json({
-      userId: user._id,
+      user: {
+        id: user._id,
+        email: user.email,
+        created: user.created,
+        lastLogin: user.lastLogin
+      },
       token: jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, {
         expiresIn: '24h'
       })

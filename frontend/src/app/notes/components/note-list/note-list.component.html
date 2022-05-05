@@ -1,3 +1,4 @@
 <div class="list-note-cards">
+  <div class="add-note"><div class="circle" (click)="onCreateNote()"></div><span>+</span></div>
   <app-note *ngFor="let note of notes$ | async" [note]="note"></app-note>
 </div>

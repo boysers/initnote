@@ -1,18 +1,18 @@
 <header>
-  <h1>Initnote</h1>
-  <nav *ngIf="isUserLoggedIn">
-    <a routerLink="/notes" routerLinkActive="active">notes</a>
-    <button class="add-btn" (click)="onAddNewNote()">+</button>
-  </nav>
+  <h1><a routerLink="/notes">Initnote</a></h1>
   <div>
     <div class="auth-card">
       <div *ngIf="!isUserLoggedIn">
         <a routerLink="auth/login" routerLinkActive="active">login</a>
         <a routerLink="auth/signup" routerLinkActive="active">signup</a>
       </div>
-      <button *ngIf="isUserLoggedIn" (click)="onDisconnect()">
-        Disconnect
-      </button>
+      <div class="btn-logout" *ngIf="isUserLoggedIn" (click)="onDisconnect()">
+        <span
+          class="iconify"
+          data-icon="teenyicons:logout-outline"
+          data-width="30"
+        ></span>
+      </div>
     </div>
   </div>
 </header>

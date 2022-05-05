@@ -20,14 +20,29 @@ export default async (
     if (req.auth.userId !== mark.userId && mark.isPrivate)
       throw new Error(`The note is private, unauthorized request !`)
 
-    const { _id, isPrivate, title, comment, imageUrl } = mark
+    const {
+      _id,
+      isPrivate,
+      created,
+      lastUpdate,
+      title,
+      comment,
+      url,
+      imageUrl
+    } = mark
 
-    const markObject = { id: _id, title, comment, imageUrl }
+    const markObject = {
+      id: _id,
+      title,
+      comment,
+      url,
+      imageUrl
+    }
 
     if (!req.auth.userId) {
       req.mark = markObject
     } else {
-      req.mark = { ...markObject, isPrivate }
+      req.mark = { ...markObject, isPrivate, created, lastUpdate }
     }
 
     next()

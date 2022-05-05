@@ -3,5 +3,6 @@ export class Note {
   isPrivate?: boolean
   title?: string
   comment?: string
+  createdDate?: Date
   imageUrl?: string
 }

@@ -12,8 +12,9 @@ import { NotesService } from 'src/app/core/services/notes.service'
 export class NewNoteComponent implements OnInit {
   title!: string
   comment!: string
-  image!: File
+  image!: File | null
   isPrivate!: boolean
+  imageUrl!: string | ArrayBuffer | null
 
   constructor(private notesService: NotesService, private router: Router) {}
 
@@ -21,11 +22,27 @@ export class NewNoteComponent implements OnInit {
     this.isPrivate = true
   }
 
-  onFileChange(event: any) {
-    this.image = event.target.files[0]
+  onDeleteImage(): void {
+    this.image = null
+    this.imageUrl = null
   }
 
-  onSubmitForm(form: NgForm): void {
+  onFileChange(event: any) {
+    const imageInput = event.target.files[0]
+    this.image = imageInput
+
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      this.imageUrl = reader.result
+    }
+
+    if (imageInput) {
+      reader.readAsDataURL(imageInput)
+    }
+  }
+
+  async onSubmitForm(form: NgForm): Promise<void> {
     const { title, comment, isPrivate } = form.value as {
       title: string
       comment: string

@@ -20,8 +20,12 @@ export class NotesService {
   }
 
   addNote(formValue: any): Observable<Note> {
+    const headers = { 'Content-Type': 'multipart/form-data' }
+
     return this.getAllNotes().pipe(
-      switchMap(() => this.http.post<Note>(`${this.url}/v1/notes`, formValue))
+      switchMap(() =>
+        this.http.post<Note>(`${this.url}/v1/notes`, formValue, { headers })
+      )
     )
   }
 

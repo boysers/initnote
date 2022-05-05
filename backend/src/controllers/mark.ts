@@ -13,6 +13,8 @@ export const createMark = async (
   const mark = new Mark({
     ...markObject,
     userId: req.auth.userId,
+    created: new Date(),
+    lastUpdate: new Date(),
     imageUrl: req.file ? `/images/${req.file.filename}` : undefined
   })
 
@@ -35,7 +37,8 @@ export const modifyMarkImage = async (
     await Mark.updateOne(
       { _id: req.params.id },
       {
-        imageUrl: `/images/${req.file.filename}`
+        imageUrl: `/images/${req.file.filename}`,
+        lastUpdate: new Date()
       }
     )
 
@@ -64,7 +67,8 @@ export const deleteMarkImage = async (
     await Mark.updateOne(
       { _id: req.params.id },
       {
-        $unset: { imageUrl: 1 }
+        $unset: { imageUrl: 1 },
+        lastUpdate: new Date()
       }
     )
 
@@ -85,7 +89,10 @@ export const modifyMark = async (
   try {
     const markObject = req.body as IMark
 
-    await Mark.updateOne({ _id: req.params.id }, markObject)
+    await Mark.updateOne(
+      { _id: req.params.id },
+      { ...markObject, lastUpdate: new Date() }
+    )
 
     res.status(200).json({ message: 'note modified !' })
   } catch ({ message }) {
@@ -133,15 +140,29 @@ export const getAllMark = async (
   res: Response
 ): Promise<void> => {
   try {
-    const Marks = (await Mark.find({ userId: req.auth.userId })).map(
-      ({ _id, isPrivate, title, comment, imageUrl }) => ({
-        id: _id,
-        isPrivate,
-        title,
-        comment,
-        imageUrl
-      })
-    )
+    const Marks = (await Mark.find({ userId: req.auth.userId }))
+      .map(
+        ({
+          _id,
+          isPrivate,
+          created,
+          lastUpdate,
+          title,
+          comment,
+          url,
+          imageUrl
+        }) => ({
+          id: _id,
+          isPrivate,
+          created,
+          lastUpdate,
+          title,
+          comment,
+          url,
+          imageUrl
+        })
+      )
+      .reverse()
 
     res.status(200).json(Marks)
   } catch ({ message }) {

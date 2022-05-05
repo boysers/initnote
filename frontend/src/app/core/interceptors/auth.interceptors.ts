@@ -40,6 +40,7 @@ export class AuthInterceptor implements HttpInterceptor {
             if (err.status !== 401) throw err
 
             this.dataSharingService.errorHttp.next(err.error.message)
+            this.dataSharingService.isUserLoggedIn.next(false)
             localStorage.removeItem('token')
             this.router.navigateByUrl('/auth/login')
           }

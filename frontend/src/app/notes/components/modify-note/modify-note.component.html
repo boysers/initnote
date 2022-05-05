@@ -1,10 +1,11 @@
 <div class="form-card">
-  <h2>Modifier la NOTE</h2>
+  <h2>MODIFIER LA NOTE</h2>
   <form (ngSubmit)="onSubmitModifyForm()" [formGroup]="noteForm">
     <div class="form-group">
       <label for="titleInput">Titre</label>
       <input type="text" id="titleInput" formControlName="title" />
     </div>
+
     <div class="form-group">
       <label for="commentInput">Commentaire</label>
       <textarea
@@ -14,28 +15,44 @@
         formControlName="comment"
       ></textarea>
     </div>
+
     <div class="form-group">
-      <label for="isPrivate">Note à partager ?</label>
+      <label for="isPrivate">Visibilité</label>
       <select id="isPrivate" formControlName="isPrivate">
         <option value="true">Privé</option>
-        <option value="false">Lien partagé</option>
+        <option value="false">Non répertorié</option>
       </select>
     </div>
+
     <div class="form-group">
       <label for="image">Image</label>
-      <input type="file" id="image" (change)="onFileChange($event)" />
+      <input
+        class="input-file"
+        type="file"
+        id="image"
+        (change)="onFileChange($event)"
+      />
     </div>
 
-    <div class="form-group image-card">
-      <img *ngIf="imageUrl" [src]="imageUrl" alt="image note" />
+    <div *ngIf="imageUrl" class="form-group image-card">
+      <div
+        class="image-center"
+        (mouseenter)="btnDelete.style.opacity = '1'"
+        (mouseleave)="btnDelete.style.opacity = '0'"
+      >
+        <img *ngIf="imageUrl" [src]="imageUrl" alt="image note" />
+        <div class="deleteImage" #btnDelete (click)="onDeleteImage()">
+          <span
+            class="iconify"
+            data-icon="ant-design:delete-outlined"
+            data-width="36"
+          ></span>
+        </div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="deleteImage">Supprimer l'image</label>
-      <input type="checkbox" id="deleteImage" formControlName="isDeleteImage" />
-    </div>
     <div>
-      <button class="action-buttons"  type="submit">Enregistrer</button>
+      <button class="action-buttons" type="submit">Enregistrer</button>
     </div>
   </form>
 </div>

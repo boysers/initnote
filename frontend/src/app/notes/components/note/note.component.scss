@@ -1,33 +1,75 @@
 .note-card {
-  background-color: var(--color2);
+  border: solid 1px #e6e4e7;
   width: 275px;
   border-radius: 10px;
   overflow: hidden;
 
-  .title {
-    margin: 0;
-  }
-
   .image-card {
+    background-color: #413c44;
     overflow: hidden;
-  }
 
-  img {
-    width: 100%;
-    display: block;
-    transition: 0.35s ease-out;
+    img {
+      width: 100%;
+      display: block;
+      transition: 0.35s ease-out;
 
-    &:hover {
-      transform: scale(1.2);
-      cursor: pointer;
+      &:hover {
+        transform: scale(1.2);
+        cursor: pointer;
+      }
     }
   }
 
-  p {
-    margin: 0.5rem 0;
+  .note-card-info {
+    margin: 10px;
+
+    h3 {
+      font-size: 20px;
+    }
+
+    p {
+      margin: 16px;
+    }
+
+    .todo {
+      margin: 16px;
+    }
   }
 
-  .note-card-info {
-    padding: 0.75rem;
+  .note-settings {
+    display: flex;
+    margin: 8px;
+    justify-content: space-around;
+
+    div {
+      color: #e6e4e7;
+      transition: 0.25s;
+
+      svg {
+        cursor: pointer;
+      }
+
+      &:hover {
+        color: hsl(278, 6%, 60%);
+      }
+    }
+
+    .btn-copyUrl {
+      position: relative;
+
+      .onCopyMessage {
+        display: none;
+        bottom: 28px;
+        left: -12px;
+        position: absolute;
+      }
+
+      span {
+        color: #e6e4e7;
+        background-color: rgb(40, 92, 42);
+        padding: 2px;
+        border-radius: 2px;
+      }
+    }
   }
 }

@@ -1,12 +1,57 @@
-<div class="note-card">
-  <div class="image-card">
-    <img *ngIf="note.imageUrl" [src]="urlApi + note.imageUrl" [alt]="note.title" />
+<div class="note-card" #noteCard>
+  <div *ngIf="note.imageUrl" class="image-card">
+    <img [src]="urlApi + note.imageUrl" [alt]="note.title" />
   </div>
   <div class="note-card-info">
-    <h3 class="title">{{ note.title }}</h3>
-    <p>{{ note.comment }}</p>
-    <p *ngIf="note.isPrivate; else elseBlock">🔒 Privée</p>
-    <ng-template #elseBlock>🔓 Partagée</ng-template>
-    <button (click)="onViewNote()">look</button>
+    <h3>
+      <ng-container
+        *ngIf="note.isPrivate; then private; else notPrivate"
+      ></ng-container>
+      <ng-template #private>🔒 </ng-template>
+      <ng-template #notPrivate>🔓 </ng-template>
+
+      <ng-container
+        *ngIf="
+          note.title || note.comment || note.imageUrl;
+          then title;
+          else notTitle
+        "
+      ></ng-container>
+      <ng-template #title>{{ note.title }}</ng-template>
+      <ng-template #notTitle>Note vide</ng-template>
+    </h3>
+
+    <p *ngIf="note.comment" style="white-space: pre-line">{{ note.comment }}</p>
+
+    <!-- <div class="todo">
+      <div *ngFor="let todo of note.comment?.split('\r\n')">
+        <input type="checkbox" (click)="onChecked($event)" #checked />
+        <p style="display: inline; padding-left: 5px; white-space: pre-line">
+          {{ todo }}
+        </p>
+      </div>
+    </div> -->
+  </div>
+  <div class="note-settings">
+    <div (click)="onDelete(note.id)">
+      <span
+        class="iconify"
+        data-icon="ant-design:delete-outlined"
+        data-width="22"
+      ></span>
+    </div>
+
+    <div (click)="onModify()">
+      <span
+        class="iconify"
+        data-icon="clarity:note-edit-line"
+        data-width="22"
+      ></span>
+    </div>
+
+    <div (click)="onCopyClipboard(note.id)" class="btn-copyUrl">
+      <span class="onCopyMessage" #messageCopy>copié</span>
+      <span class="iconify" data-icon="carbon:copy-link" data-width="22"></span>
+    </div>
   </div>
 </div>

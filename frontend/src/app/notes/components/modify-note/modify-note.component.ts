@@ -14,7 +14,8 @@ export class ModifyNoteComponent implements OnInit {
 
   image!: File
   noteId!: string
-  imageUrl!: string | undefined
+  imageUrl!: string | ArrayBuffer | null
+  isImageUrl!: boolean
 
   constructor(
     private notesServices: NotesService,
@@ -43,30 +44,48 @@ export class ModifyNoteComponent implements OnInit {
           this.noteForm.controls['comment'].setValue(comment)
           this.noteForm.controls['isPrivate'].setValue(isPrivate)
 
-          this.imageUrl = imageUrl ? urlApi + imageUrl : undefined
+          this.imageUrl = imageUrl ? urlApi + imageUrl : null
+
+          this.isImageUrl = imageUrl ? true : false
         })
       )
       .subscribe()
   }
 
   onFileChange(event: any) {
-    this.image = event.target.files[0]
+    const imageInput = event.target.files[0]
+    this.image = imageInput
+
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      this.imageUrl = reader.result
+    }
+
+    if (imageInput) {
+      reader.readAsDataURL(imageInput)
+    }
   }
 
   onDeleteImage(): void {
-    this.notesServices.deleteImage(this.noteId).subscribe()
+    if (confirm("Voulez-vous supprimer l'image ?")) {
+      if (this.isImageUrl) {
+        this.notesServices.deleteImage(this.noteId).subscribe(() => {
+          this.imageUrl = null
+          this.isImageUrl = false
+        })
+      } else {
+        this.imageUrl = null
+      }
+    }
   }
 
   onSubmitModifyForm(): void {
-    const { title, comment, isPrivate, isDeleteImage } = this.noteForm
-      .value as {
+    const { title, comment, isPrivate } = this.noteForm.value as {
       title: string
       comment: string
       isPrivate: boolean
-      isDeleteImage: boolean
     }
-
-    if (isDeleteImage) this.onDeleteImage()
 
     const noteObject = {
       title,
@@ -82,7 +101,7 @@ export class ModifyNoteComponent implements OnInit {
 
     this.notesServices
       .modifyNote(this.noteId, noteObject)
-      .pipe(tap(() => this.router.navigateByUrl(`/notes/${this.noteId}`)))
+      .pipe(tap(() => this.router.navigateByUrl(`/notes`)))
       .subscribe()
   }
 }

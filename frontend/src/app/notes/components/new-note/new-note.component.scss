@@ -1,36 +1,108 @@
 .form-card {
-  width: 50%;
-  margin: 20px auto;
-  padding: 10px 30px;
-  background-color: var(--color2);
+  width: 550px;
+  margin: 48px auto;
+  padding: 24px 36px;
+
+  border: solid 1px #e6e4e7;
+  border-radius: 10px;
+}
+
+#titleInput {
+  font-size: 24px;
+}
+
+#commentInput {
+  font-size: 16px;
+}
+
+#isPrivate,
+.input-file,
+.preview-img {
+  font-size: 18px;
 }
 
 .form-group {
   margin: 10px auto;
-  width: 80%;
+  width: 90%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-input, textarea {
-  width: 50%;
+input[type='text'],
+textarea,
+select,
+.input-file {
+  width: 60%;
+  font-size: 16px;
+}
+
+.input-todos {
+  flex-direction: column;
+}
+
+.input-todo {
+}
+
+.input-file {
+  background-color: hsl(280, 6%, 25%);
+  border-radius: 5px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.25s;
+
+  &:hover {
+    background-color: hsl(280, 6%, 20%);
+  }
+
+  input[type='file'] {
+    all: unset;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  label {
+    cursor: pointer;
+    z-index: 100;
+    text-align: center;
+    width: 100%;
+    padding: 18px;
+  }
+
+  .cursor {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    cursor: pointer;
+  }
 }
 
 .action-buttons {
   width: 100%;
+  margin-top: 24px;
+}
+
+h2 {
+  margin-bottom: 24px;
 }
 
 button {
   display: block;
-  margin: 20px auto;
 }
 
-.radio {
-  justify-content: flex-start;
-  input {
-    width: auto;
-    margin: 0 10px;
+.preview-img {
+  justify-content: center;
+
+  img {
+    width: 75%;
   }
-  
 }
