@@ -39,6 +39,7 @@ services:
       - db-api-network
     volumes:
       - db_data:/data/db
+      - db_config:/data/configdb
 
 networks:
   db-api-network:
@@ -46,3 +47,6 @@ networks:
 
 volumes:
   db_data:
+    driver: local
+  db_config:
+    driver: local

@@ -13,6 +13,11 @@ ifeq (clear,$(firstword $(MAKECMDGOALS)))
   $(eval $(RUN_ARGS):;@:)
 endif
 
+ifeq (logs,$(firstword $(MAKECMDGOALS)))
+  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(RUN_ARGS):;@:)
+endif
+
 .PHONY: up
 up:
 	docker-compose -f docker-compose.yml -f docker-compose.${RUN_ARGS}.yml up -d
@@ -25,20 +30,6 @@ down:
 clear:
 	docker-compose -f docker-compose.yml -f docker-compose.${RUN_ARGS}.yml down --rmi "local"
 
+.PHONY: log
 logs:
-	docker logs -f api-express
-
-# prod:
-# 	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-
-# stop:
-# 	docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
-
-# dev: 
-# 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
-
-# down:
-# 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
-
-# logs:
-# 	docker logs -f api-express
+	docker logs -f ${RUN_ARGS}
