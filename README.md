@@ -37,7 +37,7 @@ back:  http://localhost:8080/api
 
 ```
 CLIENT_PORT=4200
-CLIENT_HOSTNAME=angular-frontend
+CLIENT_HOSTNAME=frontend-angular
 
 API_PORT=3000
 API_HOSTNAME=api-express

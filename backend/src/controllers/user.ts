@@ -40,8 +40,8 @@ export const login = async (req: Request, res: Response) => {
     const isValid = await bcrypt.compare(password, user.password)
     if (!isValid) return res.status(401).json({ error: 'Incorrect password !' })
 
-    user.lastLogin = new Date()
-    await user.save()
+    // user.lastLogin = new Date()
+    // await user.save()
 
     res.status(200).json({
       user: {
