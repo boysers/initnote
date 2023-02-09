@@ -1,4 +1,4 @@
-import { connect, ConnectOptions } from 'mongoose'
+import { connect, ConnectOptions, set } from 'mongoose'
 
 const { MONGO_PORT, MONGO_DB, MONGO_HOSTNAME, MONGO_USERNAME, MONGO_PASSWORD } =
   process.env
@@ -13,6 +13,7 @@ const clientOptions: ConnectOptions = {
 
 const connectdb = async (): Promise<void> => {
   try {
+    set('strictQuery', true)
     await connect(mongoUrl, clientOptions)
 
     console.log('bdd connecté')
