@@ -10,7 +10,6 @@ services:
     networks:
       - api-client-network
     volumes:
-      - "/app/node_modules"
       - "./frontend:/app"
     command: /bin/sh -c "npm install && ng serve --host 0.0.0.0 --port $CLIENT_PORT --proxy-config proxy.conf.js --disable-host-check --poll=1000"
 
@@ -18,11 +17,10 @@ services:
     image: node:16-alpine
     working_dir: /app
     volumes:
-      - "/app/node_modules"
       - "./backend:/app"
     ports:
       - "${API_PORT}:${API_PORT}"
-    command: /bin/sh -c "npm install && npm run serve"
+    command: /bin/sh -c "sh start.sh"
     networks:
       - api-client-network
 
