@@ -20,7 +20,7 @@ endif
 
 .PHONY: up
 up:
-	docker compose -f docker-compose.yml -f docker-compose.${RUN_ARGS}.yml up
+	docker compose -f docker-compose.yml -f docker-compose.${RUN_ARGS}.yml up -d
 
 .PHONY: down
 down:
