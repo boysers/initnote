@@ -20,15 +20,15 @@ endif
 
 .PHONY: up
 up:
-	docker-compose -f docker-compose.yml -f docker-compose.${RUN_ARGS}.yml up -d
+	docker compose -f docker-compose.yml -f docker-compose.${RUN_ARGS}.yml up
 
 .PHONY: down
 down:
-	docker-compose -f docker-compose.yml -f docker-compose.${RUN_ARGS}.yml down
+	docker compose -f docker-compose.yml -f docker-compose.${RUN_ARGS}.yml down
 
 .PHONY: clear
 clear:
-	docker-compose -f docker-compose.yml -f docker-compose.${RUN_ARGS}.yml down --rmi "local"
+	docker compose -f docker-compose.yml -f docker-compose.${RUN_ARGS}.yml down --rmi "local"
 
 .PHONY: log
 logs:
