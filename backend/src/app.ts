@@ -11,6 +11,8 @@ connectdb()
 
 const port: number = parseInt(process.env.API_PORT || '3000', 10)
 
+console.log(process.env.TOKEN_SECRET)
+
 const app: Express = express()
 
 app.use(logger('dev'))
